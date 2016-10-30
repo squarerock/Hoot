@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/iv_profile_pic"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        app:srcCompat="@drawable/ic_launcher"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"/>
+
+    <LinearLayout
+        android:id="@+id/ll_tweet_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/iv_profile_pic"
+        android:layout_toEndOf="@id/iv_profile_pic"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp">
+        <include layout="@layout/item_name_handle"/>
+    </LinearLayout>
+
+    <View
+        android:layout_below="@id/ll_tweet_content"
+        android:layout_marginTop="4dp"
+        style="@style/DividerTheme" />
+</RelativeLayout>

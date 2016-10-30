@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="start">
+        <ImageView
+            android:id="@+id/iv_reply"
+            android:src="@drawable/ic_reply"
+            style="@style/ItemButton.TweetActions" />
+    </LinearLayout>
+
+    <!--<ImageView
+        android:id="@+id/iv_retweet"
+        android:src="@drawable/ic_retweet"
+        android:layout_weight="1"
+        style="@style/ItemButton.TweetActions" />
+
+    <ImageView
+        android:id="@+id/iv_favorites"
+        android:src="@drawable/ic_favorite"
+        android:layout_weight="1"
+        style="@style/ItemButton.TweetActions"/>-->
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.75"
+        android:gravity="start">
+        <include layout="@layout/button_retweet"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.75"
+        android:gravity="start">
+        <include layout="@layout/button_favorites"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="start">
+        <ImageView
+            android:id="@+id/iv_message"
+            android:src="@drawable/ic_message"
+            style="@style/ItemButton.TweetActions"/>
+    </LinearLayout>
+
+    <!--<LinearLayout
+        android:id="@+id/ll_item_button_share"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="start">
+        <ImageView
+            android:id="@+id/iv_share"
+            android:src="@drawable/ic_share"
+            style="@style/ItemButton.TweetActions"/>
+    </LinearLayout>-->
+</LinearLayout>

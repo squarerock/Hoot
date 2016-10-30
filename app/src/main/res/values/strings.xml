@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Hoot</string>
+    <string name="login_label">Log in</string>
+    <string name="what_is_happening">What\'s happening?</string>
+    <string name="tweet">Tweet</string>
+    <string name="retweets">Retweets</string>
+    <string name="likes">Likes</string>
+    <string name="search">search</string>
+    <string name="action_settings">Settings</string>
+
+</resources>

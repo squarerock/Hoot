@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tv_user_name"
+        android:text="Pranav Konduru"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:id="@+id/tv_handle"
+        android:textColor="@color/handle_color"
+        android:text="\@squarerocklabs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/tv_user_name"
+        android:layout_toEndOf="@id/tv_user_name"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"/>
+
+    <TextView
+        android:id="@+id/tv_tweet_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="5s"
+        android:textColor="@color/handle_color"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true" />
+
+    <squarerock.hoot.utils.LinkifiedTextView
+        android:id="@+id/tv_tweet_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_user_name"
+        android:autoLink="all"
+        android:text="Tweet goes here"
+        android:textSize="16sp"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"/>
+
+    <ImageView
+        android:id="@+id/iv_item_image"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@id/tv_tweet_text"
+        android:visibility="gone"
+        android:layout_margin="8dp"/>
+
+    <LinearLayout
+        android:id="@+id/ll_item_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/iv_item_image">
+        <include layout="@layout/item_tweet_buttons" />
+    </LinearLayout>
+</RelativeLayout>

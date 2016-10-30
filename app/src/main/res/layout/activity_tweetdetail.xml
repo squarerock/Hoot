@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!--<android.support.design.widget.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_tweet_detail"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:textColorSecondary="@color/twitter_blue"
+            app:layout_scrollFlags="scroll|enterAlways" />
+    </android.support.design.widget.AppBarLayout>-->
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        >
+        <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
+        <ImageView
+            android:id="@+id/iv_detail_pic"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_margin="8dp"
+            android:src="@drawable/ic_launcher" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/iv_detail_pic"
+            android:layout_toRightOf="@id/iv_detail_pic"
+            android:layout_toEndOf="@id/iv_detail_pic">
+            <include layout="@layout/layout_tweetdetail_handle"/>
+        </LinearLayout>
+
+        <squarerock.hoot.utils.LinkifiedTextView
+            android:id="@+id/tv_detail_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:autoLink="all"
+            android:layout_below="@id/iv_detail_pic"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:text="DJI's flagship store in Seoul is a drone paradise"/>
+
+        <ImageView
+            android:id="@+id/iv_detail_image"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_below="@id/tv_detail_text"
+            android:visibility="gone"
+            android:layout_margin="8dp"/>
+
+        <TextView
+            android:id="@+id/tv_detail_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/iv_detail_image"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:textColor="@color/handle_color"
+            android:textSize="14sp"
+            android:text="2:30 PM . 28 Oct 16"/>
+
+        <View
+            android:id="@+id/divider_below_time"
+            android:layout_below="@id/tv_detail_time"
+            android:layout_marginTop="4dp"
+            style="@style/DividerTheme"/>
+
+        <TextView
+            android:id="@+id/tv_detail_retweets_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:text="20"
+            android:textSize="14sp"
+            android:layout_below="@id/divider_below_time"/>
+
+        <TextView
+            android:id="@+id/tv_detail_retweets"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/retweets"
+            android:textAllCaps="true"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_toRightOf="@id/tv_detail_retweets_number"
+            android:layout_toEndOf="@id/tv_detail_retweets_number"
+            android:layout_alignTop="@id/tv_detail_retweets_number"/>
+
+        <TextView
+            android:id="@+id/tv_detail_likes_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="23"
+            android:textSize="14sp"
+            android:layout_toRightOf="@id/tv_detail_retweets"
+            android:layout_alignTop="@id/tv_detail_retweets"/>
+
+        <TextView
+            android:id="@+id/tv_detail_likes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/likes"
+            android:textAllCaps="true"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_toRightOf="@id/tv_detail_likes_number"
+            android:layout_toEndOf="@id/tv_detail_likes_number"
+            android:layout_alignTop="@id/tv_detail_likes_number"/>
+
+        <View
+            android:id="@+id/divider_below_likes"
+            android:layout_below="@id/tv_detail_likes"
+            android:layout_marginTop="16dp"
+            style="@style/DividerTheme"/>
+
+        <LinearLayout
+            android:id="@+id/ll_item_detail_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_below="@id/divider_below_likes">
+            <include layout="@layout/item_moviedetail_buttons"/>
+        </LinearLayout>
+
+        <View
+            android:layout_below="@id/ll_item_detail_buttons"
+            android:layout_marginTop="16dp"
+            style="@style/DividerTheme"/>
+
+        <View
+            android:layout_above="@+id/et_detail_reply"
+            style="@style/DividerTheme"/>
+
+        <EditText
+            android:id="@+id/et_detail_reply"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:hint="Reply to TechCrunch"
+            android:layout_alignParentBottom="true"
+            android:imeOptions="actionSend"/>
+
+        <!--<RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/ll_detail_send"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                >
+                <TextView
+                    android:id="@+id/tv_detail_tweet_length"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:text="140"/>
+                <TextView
+                    android:id="@+id/btn_detail_tweet_send"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tweet"
+                    android:background="@color/twitter_blue"
+                    android:textColor="@color/white"
+                    android:padding="4dp"/>
+            </LinearLayout>
+
+        </RelativeLayout>-->
+
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>
