@@ -124,14 +124,15 @@ public class TweetComposeFragment extends DialogFragment implements View.OnClick
                     Log.d(TAG, "onSuccess: posted Tweet");
                     try {
                         Log.d(TAG, "onSuccess: sending result to tweet compose fragment");
+
                         TweetModel postedTweet = TweetModel.parseJSON(new String(responseBody, "UTF-8"));
+
                         Intent intent = new Intent();
                         intent.putExtra("addedTweet", Parcels.wrap(TweetModel.class, postedTweet));
                         getTargetFragment().onActivityResult(getTargetRequestCode(), 0, intent);
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
-
                     dismiss();
                 }
 

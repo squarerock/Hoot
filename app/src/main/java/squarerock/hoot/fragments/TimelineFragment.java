@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 
 import com.codepath.apps.restclienttemplate.R;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.parceler.Parcels;
 
@@ -30,7 +31,9 @@ import butterknife.OnClick;
 import cz.msebera.android.httpclient.Header;
 import squarerock.hoot.Hoot;
 import squarerock.hoot.TwitterClient;
+import squarerock.hoot.activities.SearchActivity;
 import squarerock.hoot.activities.TweetDetailActivity;
+import squarerock.hoot.activities.UserTimelineActivity;
 import squarerock.hoot.adapters.TweetAdapter;
 import squarerock.hoot.listeners.EndlessRecyclerViewScrollListener;
 import squarerock.hoot.models.TweetModel;
@@ -53,6 +56,7 @@ public class TimelineFragment extends Fragment implements TweetAdapter.TweetClic
     private EndlessRecyclerViewScrollListener scrollListener;
     private static final String TAG = "TimelineFragment";
     private final int REQUEST_CODE = 1984;
+    private Snackbar snackbar;
 
     public TimelineFragment() {
     }
@@ -75,6 +79,9 @@ public class TimelineFragment extends Fragment implements TweetAdapter.TweetClic
         swipeRefreshLayout.setOnRefreshListener(this);
         twitterClient = Hoot.getRestClient();
 
+        snackbar = Snackbar.make(rvTimeline, "Network not available. Try again later", Snackbar.LENGTH_INDEFINITE);
+        snackbar.setAction("OK",null);
+
         return view;
     }
 
@@ -82,7 +89,7 @@ public class TimelineFragment extends Fragment implements TweetAdapter.TweetClic
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.d(TAG, "onActivityCreated: ");
-        fetchTweets(0, false);
+        fetchTweets(0, -1, -1, false);
     }
 
     @Override
@@ -100,7 +107,7 @@ public class TimelineFragment extends Fragment implements TweetAdapter.TweetClic
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 Log.d(TAG, "onLoadMore: loading for page: " + page);
-                fetchTweets(page, false);
+                fetchTweets(-1, TweetModel.getSinceId(), -1, false);
             }
         };
         rvTimeline.addOnScrollListener(scrollListener);
@@ -119,14 +126,73 @@ public class TimelineFragment extends Fragment implements TweetAdapter.TweetClic
         getActivity().startActivity(intent);
     }
 
-    private void fetchTweets(int page, final boolean isRefreshing) {
+    @Override
+    public void onUserProfileClicked(String screenName) {
+        Log.d(TAG, "onUserProfileClicked: opening user profile for ScreenName: "+screenName);
+        Intent intent = new Intent(getContext(), UserTimelineActivity.class);
+        intent.putExtra("screen_name", screenName);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onHashTagClicked(String hashtag) {
+        Log.d(TAG, "onHashTagClicked: "+hashtag);
+        Intent intent = new Intent(getContext(), SearchActivity.class);
+        intent.putExtra("search_item", hashtag);
+        getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void onRetweet(final int positionInAdapter, long tweetId, boolean isRetweeted) {
+        Log.d(TAG, "onRetweet: ");
+        twitterClient.retweet(tweetId, isRetweeted, new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Log.e(TAG, "onFailure: ",throwable );
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                Log.d(TAG, "onSuccess: ");
+                TweetModel updatedTweet = TweetModel.parseJSON(responseString);
+                updatedTweet.user.save();
+                updatedTweet.save();
+
+                adapter.updateItem(positionInAdapter, updatedTweet);
+            }
+        });
+    }
+
+    @Override
+    public void onFavorite(final int positionInAdapter, long tweetId, boolean isFavorited) {
+        twitterClient.favorite(tweetId, isFavorited, new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Log.e(TAG, "onFailure: ",throwable );
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                Log.d(TAG, "onSuccess: ");
+                TweetModel updatedTweet = TweetModel.parseJSON(responseString);
+                updatedTweet.user.save();
+                updatedTweet.save();
+
+                adapter.updateItem(positionInAdapter, updatedTweet);
+            }
+        });
+    }
+
+    private void fetchTweets(int page, long sinceId, long maxId, final boolean isRefreshing) {
         if (Utility.isNetworkAvailable(getContext())) {
+            if(snackbar.isShown()) snackbar.dismiss();
+
             Log.d(TAG, "fetchTweets: Network available. Fetching tweets");
             if(!swipeRefreshLayout.isRefreshing()){
                 swipeRefreshLayout.setRefreshing(true);
             }
 
-            twitterClient.getHomeTimeline(page, new AsyncHttpResponseHandler() {
+            twitterClient.getHomeTimeline(page, sinceId, maxId, new AsyncHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                     try {
@@ -164,16 +230,15 @@ public class TimelineFragment extends Fragment implements TweetAdapter.TweetClic
             Log.d(TAG, "fetchTweets: Network unavailable. Fetching from database");
             adapter.clearAll();
             adapter.update(TweetModel.getTweets());
-            Snackbar snackbar = Snackbar.make(rvTimeline, "Network not available. Try again later", Snackbar.LENGTH_INDEFINITE);
-            snackbar.setAction("OK",null)
-            .show();
+
+            snackbar.show();
         }
     }
 
     @Override
     public void onRefresh() {
         scrollListener.resetState();
-        fetchTweets(0, true);
+        fetchTweets(0, -1, -1, true);
     }
 
     @OnClick(R.id.fabTweet)

@@ -1,5 +1,7 @@
 package squarerock.hoot.models;
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -53,6 +55,9 @@ public class TweetModel extends BaseModel {
 	@Column
 	public UserModel user;
 
+    /*@Column
+    public EntitiesModel media;*/
+
     /*@ForeignKey(references = {
             @ForeignKeyReference(
                     columnType = long.class,
@@ -93,4 +98,71 @@ public class TweetModel extends BaseModel {
 
         return gson.fromJson(jsonString, TweetModel.class);
     }
+
+    public static long getMaxId(){
+        List<TweetModel> remoteIdList = getTweetModelIds(false);
+        return remoteIdList.get(0).id;
+    }
+
+    public static long getSinceId(){
+        List<TweetModel> remoteIdList = getTweetModelIds(true);
+        return remoteIdList.get(0).id;
+    }
+
+    @NonNull
+    private static List<TweetModel> getTweetModelIds(boolean sortAsc) {
+        return new Select().from(TweetModel.class)
+                .orderBy(TweetModel_Table.created_at, sortAsc)
+                .queryList();
+    }
+
+    public static List<TweetModel> getTweetsByScreenName(String screenName){
+        return new Select().from(TweetModel.class)
+                .innerJoin(UserModel.class)
+                .on()
+                .where(UserModel_Table.screen_name.eq(screenName))
+                .orderBy(TweetModel_Table.created_at, false)
+                .queryList();
+
+    }
+
+    /*public static TweetModel fromJSON(JSONObject jsonobject) throws JSONException {
+        TweetModel tweet = new TweetModel();
+
+        try {
+            tweet.id = jsonobject.getLong("id");
+            tweet.created_at = jsonobject.getString("created_at");
+            tweet.text = jsonobject.getString("text");
+            tweet.retweet_count = jsonobject.getInt("retweet_count");
+            tweet.favorite_count = jsonobject.getInt("favorite_count");
+            tweet.favorited = jsonobject.getBoolean("favorited");
+            tweet.retweeted = jsonobject.getBoolean("retweeted");
+            tweet.user = UserModel.fromJSON(jsonobject.getJSONObject("user"));
+//            tweet.media = EntitiesModel.fromJSON(jsonobject);
+            tweet.save();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        //Return the tweet object
+        return tweet;
+    }
+
+    public static ArrayList<TweetModel> fromJSONArray(JSONArray jsonarray) {
+        ArrayList<TweetModel> tweets = new ArrayList<>();
+        //Iterate the json array and create tweets
+        for (int i = 0; i < jsonarray.length(); i++) {
+            try {
+                JSONObject tweetjson = jsonarray.getJSONObject(i);
+                TweetModel tweet = TweetModel.fromJSON((tweetjson));
+                if (tweet != null)
+                    tweets.add(tweet);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        //return finished list
+        return tweets;
+    }*/
 }

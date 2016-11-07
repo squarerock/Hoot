@@ -38,6 +38,9 @@
         <activity android:name="squarerock.hoot.activities.TweetListActivity" />
         <activity
             android:name="squarerock.hoot.activities.TweetDetailActivity"/>
+        <activity android:name="squarerock.hoot.activities.UserTimelineActivity"/>
+        <activity android:name="squarerock.hoot.activities.FriendsAndFollowingActivity"/>
+        <activity android:name="squarerock.hoot.activities.SearchActivity"/>
     </application>
 
 </manifest>

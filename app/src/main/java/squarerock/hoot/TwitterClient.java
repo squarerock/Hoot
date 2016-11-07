@@ -9,6 +9,9 @@ import com.loopj.android.http.RequestParams;
 import org.scribe.builder.api.Api;
 import org.scribe.builder.api.TwitterApi;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 /*
  * 
  * This is the object responsible for communicating with a REST API. 
@@ -34,29 +37,18 @@ public class TwitterClient extends OAuthBaseClient {
 		super(context, REST_API_CLASS, REST_URL, REST_CONSUMER_KEY, REST_CONSUMER_SECRET, REST_CALLBACK_URL);
 	}
 
-	// CHANGE THIS
-	// DEFINE METHODS for different API endpoints here
-	public void getInterestingnessList(AsyncHttpResponseHandler handler) {
-		String apiUrl = getApiUrl("?nojsoncallback=1&method=flickr.interestingness.getList");
-		// Can specify query string params directly or through RequestParams.
-		RequestParams params = new RequestParams();
-		params.put("format", "json");
-		client.get(apiUrl, params, handler);
-	}
-
-	/* 1. Define the endpoint URL with getApiUrl and pass a relative path to the endpoint
-	 * 	  i.e getApiUrl("statuses/home_timeline.json");
-	 * 2. Define the parameters to pass to the request (query or body)
-	 *    i.e RequestParams params = new RequestParams("foo", "bar");
-	 * 3. Define the request method and make a call to the client
-	 *    i.e client.get(apiUrl, params, handler);
-	 *    i.e client.post(apiUrl, params, handler);
-	 */
-
-	public void getHomeTimeline(int page, AsyncHttpResponseHandler handler) {
+	public void getHomeTimeline(int page, long sinceId, long maxId, AsyncHttpResponseHandler handler) {
 		String apiUrl = getApiUrl("statuses/home_timeline.json");
 		RequestParams params = new RequestParams();
-		params.put("page", String.valueOf(page));
+        if(sinceId != -1){
+            params.put("since_id", sinceId);
+        }
+        if(maxId != -1){
+            params.put("max_id", maxId);
+        }
+        if(page != -1) {
+            params.put("page", String.valueOf(page));
+        }
 		client.get(apiUrl, params, handler);
 	}
 
@@ -69,5 +61,105 @@ public class TwitterClient extends OAuthBaseClient {
         }
 
         client.post(url,params,handler);
+    }
+
+    public void getMentionTweets(int page, long sinceId, long maxId, AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("statuses/mentions_timeline.json");
+        RequestParams params = new RequestParams();
+        if(sinceId != -1){
+            params.put("since_id", String.valueOf(sinceId));
+        }
+        if(maxId != -1){
+            params.put("max_id", String.valueOf(maxId));
+        }
+        params.put("page", String.valueOf(page));
+        client.get(apiUrl, params, handler);
+    }
+
+    public void getUserTimeline(String screenName, long since_id, AsyncHttpResponseHandler handler){
+        String apiUrl = getApiUrl("statuses/user_timeline.json");
+        RequestParams params = new RequestParams();
+        if(since_id != -1){
+            params.put("since_id", since_id);
+        }
+        params.put("screen_name", screenName);
+
+        // Get everything in one shot. Filter them out in UI
+        params.put("exclude_replies", false);
+        params.put("include_rts", true);
+        client.get(apiUrl, params, handler);
+    }
+
+    public void getUserProfile(AsyncHttpResponseHandler handler) {
+        String url = getApiUrl("account/verify_credentials.json");
+        client.get(url,handler);
+    }
+
+    public void getFollowers(String screenName, long cursor, AsyncHttpResponseHandler handler){
+        String url = getApiUrl("followers/list.json");
+        RequestParams params = new RequestParams();
+        params.put("screen_name", screenName);
+        if(cursor != -1){
+            params.put("cursor", cursor);
+        }
+        client.get(url, params, handler);
+    }
+
+    public void getFriends(String screenName, long cursor, AsyncHttpResponseHandler handler){
+        String url = getApiUrl("friends/list.json");
+        RequestParams params = new RequestParams();
+        params.put("screen_name", screenName);
+        if(cursor != -1){
+            params.put("cursor", cursor);
+        }
+        client.get(url, params, handler);
+    }
+
+
+    public void retweet(long retweetId, boolean retweeted, AsyncHttpResponseHandler handler) {
+        String apiUrl;
+        if(!retweeted)
+            apiUrl= getApiUrl("statuses/retweet/") + retweetId + ".json";
+        else{
+            apiUrl = getApiUrl("statuses/unretweet/") + retweetId + ".json";
+        }
+        client.post(apiUrl, handler);
+    }
+
+    public void favorite(long favoriteId, boolean favorited, AsyncHttpResponseHandler handler){
+        String apiUrl;
+        if(!favorited){
+            apiUrl = getApiUrl("favorites/create.json");
+        } else{
+            apiUrl = getApiUrl("favorites/destroy.json");
+        }
+
+        RequestParams params = new RequestParams();
+        params.put("id", favoriteId);
+        client.post(apiUrl, params, handler);
+    }
+
+    public void getUser(String screenName,AsyncHttpResponseHandler handler){
+        String apiUrl = getApiUrl("users/show.json");
+        RequestParams params = new RequestParams();
+        params.put("screen_name", screenName);
+        client.get(apiUrl,params,handler);
+    }
+
+    public void searchTweets(String query, AsyncHttpResponseHandler handler) throws UnsupportedEncodingException {
+        String apiUrl = getApiUrl("search/tweets.json");
+        RequestParams params = new RequestParams();
+        String encodedQuery = URLEncoder.encode(query, "UTF-8");
+        params.put("q", query);
+        client.get(apiUrl, params, handler);
+    }
+
+    public void searchUsers(String query, AsyncHttpResponseHandler handler) throws UnsupportedEncodingException {
+        String apiUrl = getApiUrl("users/search.json");
+        RequestParams params = new RequestParams();
+        String encodedQuery = URLEncoder.encode(query, "UTF-8");
+        params.put("q", query);
+        params.put("count", 5);
+        client.get(apiUrl, params, handler);
     }
 }

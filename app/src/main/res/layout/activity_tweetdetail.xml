@@ -20,11 +20,12 @@
             app:layout_scrollFlags="scroll|enterAlways" />
     </android.support.design.widget.AppBarLayout>-->
 
+
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         >
-        <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
         <ImageView
             android:id="@+id/iv_detail_pic"
             android:layout_width="48dp"

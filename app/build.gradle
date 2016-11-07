@@ -9,6 +9,8 @@ android {
         applicationId "squarerock.hoot"
         minSdkVersion 16
         targetSdkVersion 25
+
+        vectorDrawables.useSupportLibrary true
     }
 
     // Related to https://github.com/scribejava/scribejava/issues/480
@@ -44,7 +46,6 @@ dependencies {
     // Picasso for remote image loading
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.google.code.gson:gson:2.7'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9'
     compile 'com.android.support:recyclerview-v7:24.2.1'
 
     compile 'com.jakewharton:butterknife:8.2.1'
@@ -61,4 +62,7 @@ dependencies {
     compile "com.github.Raizlabs.DBFlow:dbflow:${dbflow_version}"
     compile 'com.android.support:design:24.2.1'
     compile 'com.android.support:support-v4:25.0.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta3'
+    compile 'jp.wasabeef:picasso-transformations:2.1.0'
+    compile 'de.hdodenhof:circleimageview:2.1.0'
 }

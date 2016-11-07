@@ -2,23 +2,13 @@ package squarerock.hoot.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 
 import com.codepath.apps.restclienttemplate.R;
 import com.codepath.oauth.OAuthLoginActionBarActivity;
-import com.google.gson.reflect.TypeToken;
-import com.loopj.android.http.AsyncHttpResponseHandler;
 
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Type;
-import java.util.List;
-
-import cz.msebera.android.httpclient.Header;
 import squarerock.hoot.TwitterClient;
-import squarerock.hoot.models.TweetModel;
-import squarerock.hoot.models.TwitterTimeline;
 
 public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
 
@@ -53,7 +43,7 @@ public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
 //		fetchTweets();
 	}
 
-	private void fetchTweets(){
+	/*private void fetchTweets(){
 		twitterClient.getHomeTimeline(0, new AsyncHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -75,7 +65,7 @@ public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
 				Log.e(TAG, "onFailure: ",error);
 			}
 		});
-	}
+	}*/
 	// OAuth authentication flow failed, handle the error
 	// i.e Display an error dialog or toast
 	@Override

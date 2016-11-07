@@ -1,6 +1,256 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+<android.support.constraint.ConstraintLayout
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-</RelativeLayout>
+    <ImageView
+        android:id="@+id/iv_detail_pic"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:src="@drawable/ic_launcher"
+        tools:layout_conversion_absoluteX="8dp"
+        tools:layout_conversion_absoluteY="8dp"
+        tools:layout_conversion_absoluteWidth="48dp"
+        tools:layout_conversion_absoluteHeight="48dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_detail_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TechCrunch"
+        android:textStyle="bold"
+        android:textSize="18dp"
+        app:layout_constraintTop_toTopOf="@+id/iv_detail_pic"
+        android:layout_marginStart="8dp"
+        app:layout_constraintLeft_toRightOf="@+id/iv_detail_pic"
+        android:layout_marginLeft="8dp"/>
+
+    <ImageView
+        android:id="@+id/iv_verified"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        app:srcCompat="@drawable/ic_verified"
+        app:layout_constraintTop_toTopOf="@+id/tv_detail_name"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_detail_name"
+        app:layout_constraintLeft_toRightOf="@+id/tv_detail_name"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"/>
+    <TextView
+        android:id="@+id/tv_detail_handle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/handle_color"
+        android:textSize="14sp"
+        android:text="\@Techcrunch"
+        android:layout_marginTop="4dp"
+        app:layout_constraintTop_toBottomOf="@+id/tv_detail_name"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_detail_name"
+        />
+
+    <!--<include
+        layout="@layout/layout_tweetdetail_handle"
+        tools:layout_conversion_absoluteX="64dp"
+        tools:layout_conversion_absoluteY="8dp"
+        tools:layout_conversion_absoluteWidth="347dp"
+        tools:layout_conversion_absoluteHeight="46dp"
+        android:layout_width="0dp"
+        tools:layout_editor_absoluteY="8dp"
+        tools:layout_editor_absoluteX="8dp"/>-->
+
+
+    <squarerock.hoot.utils.LinkifiedTextView
+        android:id="@+id/tv_detail_text"
+        android:layout_width="403dp"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:autoLink="all"
+        android:text="DJI's flagship store in Seoul is a drone paradise"
+        tools:layout_conversion_absoluteX="8dp"
+        tools:layout_conversion_absoluteY="64dp"
+        tools:layout_conversion_absoluteWidth="403dp"
+        tools:layout_conversion_absoluteHeight="21dp"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_detail_pic"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/iv_detail_pic"/>
+
+    <!--<ImageView
+        android:id="@+id/iv_detail_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:layout_conversion_absoluteX="0dp"
+        tools:layout_conversion_absoluteY="0dp"
+        tools:layout_conversion_absoluteWidth="0dp"
+        tools:layout_conversion_absoluteHeight="0dp"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="0dp"/>-->
+
+    <TextView
+        android:id="@+id/tv_detail_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/handle_color"
+        android:textSize="14sp"
+        android:text="2:30 PM . 28 Oct 16"
+        tools:layout_conversion_absoluteX="8dp"
+        tools:layout_conversion_absoluteY="93dp"
+        tools:layout_conversion_absoluteWidth="123dp"
+        tools:layout_conversion_absoluteHeight="16dp"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_detail_text"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/tv_detail_text"/>
+
+    <View
+        android:id="@+id/divider_below_time"
+        style="@style/DividerTheme"
+        tools:layout_conversion_absoluteX="0dp"
+        tools:layout_conversion_absoluteY="114dp"
+        tools:layout_conversion_absoluteWidth="411dp"
+        tools:layout_conversion_absoluteHeight="1dp"
+        android:layout_height="1dp"
+        android:layout_width="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_detail_time"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:id="@+id/tv_detail_retweets_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:text="20"
+        android:textSize="14sp"
+        tools:layout_conversion_absoluteX="8dp"
+        tools:layout_conversion_absoluteY="131dp"
+        tools:layout_conversion_absoluteWidth="16dp"
+        tools:layout_conversion_absoluteHeight="16dp"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_detail_time"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/divider_below_time"/>
+
+    <TextView
+        android:id="@+id/tv_detail_retweets"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/retweets"
+        android:textAllCaps="true"
+        tools:layout_conversion_absoluteX="32dp"
+        tools:layout_conversion_absoluteY="131dp"
+        tools:layout_conversion_absoluteWidth="69dp"
+        tools:layout_conversion_absoluteHeight="16dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintLeft_toRightOf="@+id/tv_detail_retweets_number"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintTop_toTopOf="@+id/tv_detail_retweets_number"/>
+
+    <TextView
+        android:id="@+id/tv_detail_likes_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:text="23"
+        android:textSize="14sp"
+        tools:layout_conversion_absoluteX="117dp"
+        tools:layout_conversion_absoluteY="131dp"
+        tools:layout_conversion_absoluteWidth="16dp"
+        tools:layout_conversion_absoluteHeight="16dp"
+        app:layout_constraintTop_toTopOf="@+id/tv_detail_retweets"
+        android:layout_marginStart="24dp"
+        app:layout_constraintLeft_toRightOf="@+id/tv_detail_retweets"
+        android:layout_marginLeft="24dp"/>
+
+    <TextView
+        android:id="@+id/tv_detail_likes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/likes"
+        android:textAllCaps="true"
+        tools:layout_conversion_absoluteX="141dp"
+        tools:layout_conversion_absoluteY="131dp"
+        tools:layout_conversion_absoluteWidth="36dp"
+        tools:layout_conversion_absoluteHeight="16dp"
+        app:layout_constraintTop_toTopOf="@+id/tv_detail_likes_number"
+        android:layout_marginStart="8dp"
+        app:layout_constraintLeft_toRightOf="@+id/tv_detail_likes_number"
+        android:layout_marginLeft="8dp"/>
+
+    <View
+        android:id="@+id/divider_below_likes"
+        style="@style/DividerTheme"
+        tools:layout_conversion_absoluteX="0dp"
+        tools:layout_conversion_absoluteY="163dp"
+        tools:layout_conversion_absoluteWidth="411dp"
+        tools:layout_conversion_absoluteHeight="1dp"
+        android:layout_height="1dp"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/tv_detail_likes"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+    <!--<LinearLayout
+        android:id="@+id/ll_item_detail_buttons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout_conversion_absoluteX="0dp"
+        tools:layout_conversion_absoluteY="168dp"
+        tools:layout_conversion_absoluteWidth="411dp"
+        tools:layout_conversion_absoluteHeight="32dp"
+        tools:layout_editor_absoluteY="168dp"
+        tools:layout_editor_absoluteX="0dp">
+
+        <include layout="@layout/item_moviedetail_buttons"/>
+    </LinearLayout>-->
+
+
+
+
+
+
+
+    <!--<RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/ll_detail_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            >
+            <TextView
+                android:id="@+id/tv_detail_tweet_length"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="4dp"
+                android:layout_marginEnd="4dp"
+                android:text="140"/>
+            <TextView
+                android:id="@+id/btn_detail_tweet_send"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tweet"
+                android:background="@color/twitter_blue"
+                android:textColor="@color/white"
+                android:padding="4dp"/>
+        </LinearLayout>
+
+    </RelativeLayout>-->
+
+</android.support.constraint.ConstraintLayout>

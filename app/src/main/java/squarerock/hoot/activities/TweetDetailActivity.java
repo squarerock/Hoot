@@ -1,5 +1,6 @@
 package squarerock.hoot.activities;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -17,7 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.codepath.apps.restclienttemplate.R;
-import com.squareup.picasso.Picasso;
+import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.parceler.Parcels;
 
@@ -25,16 +26,18 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cz.msebera.android.httpclient.Header;
 import squarerock.hoot.Hoot;
 import squarerock.hoot.TwitterClient;
 import squarerock.hoot.models.TweetModel;
+import squarerock.hoot.utils.PatternEditableBuilder;
 import squarerock.hoot.utils.Utility;
 
 /**
  * Created by pranavkonduru on 10/28/16.
  */
 
-public class TweetDetailActivity extends AppCompatActivity implements TextView.OnEditorActionListener, View.OnClickListener {
+public class TweetDetailActivity extends AppCompatActivity implements TextView.OnEditorActionListener, View.OnClickListener, PatternEditableBuilder.SpannableClickedListener {
 
     @BindView(R.id.iv_detail_pic) ImageView ivDetailPic;
     @BindView(R.id.et_detail_reply) EditText etDetailReply;
@@ -43,6 +46,8 @@ public class TweetDetailActivity extends AppCompatActivity implements TextView.O
     @BindView(R.id.tv_detail_text) TextView tvDetailText;
     @BindView(R.id.tv_detail_time) TextView tvDetailTime;
     @BindView(R.id.iv_verified) ImageView ivVerified;
+    @BindView(R.id.iv_retweet) ImageView ivRetweets;
+    @BindView(R.id.iv_favorites) ImageView ivFavorites;
     @BindView(R.id.tv_detail_likes_number) TextView tvDetailLikesNumber;
     @BindView(R.id.tv_detail_retweets_number) TextView tvDetailRetweetsNumber;
 
@@ -70,22 +75,31 @@ public class TweetDetailActivity extends AppCompatActivity implements TextView.O
                 Log.d(TAG, "onCreate: Got the extra");
                 tweet = (TweetModel) parcelObject;
 
-                Picasso.with(this)
-                        .load(tweet.user.profile_image_url_https)
-                        .into(ivDetailPic);
+                Utility.loadImage(this, tweet.user.profile_image_url_https, ivDetailPic);
+                ivDetailPic.setOnClickListener(this);
 
                 tvDetailHandle.setText(String.format("@%s",tweet.user.screen_name));
                 tvDetailName.setText(tweet.user.name);
                 tvDetailText.setText(tweet.text);
+
+                Utility.buildSpannableText(tvDetailText, Utility.USER_HANDLE_PATTERN, this);
+                Utility.buildSpannableText(tvDetailText, Utility.HASHTAG_PATTERN, this);
+
                 tvDetailTime.setText(Utility.getDetailViewTime(tweet.created_at));
                 tvDetailLikesNumber.setText(String.valueOf(tweet.favorite_count));
                 tvDetailRetweetsNumber.setText(String.valueOf(tweet.retweet_count));
 
                 if(!tweet.user.verified) ivVerified.setVisibility(View.GONE);
 
+                if(tweet.retweeted) ivRetweets.setImageResource(R.drawable.ic_retweeted);
+                if(tweet.favorited) ivFavorites.setImageResource(R.drawable.ic_favorited);
+
                 etDetailReply.setHint(String.format("Reply to %s", tweet.user.name));
                 etDetailReply.setOnEditorActionListener(this);
                 etDetailReply.setOnClickListener(this);
+
+                ivRetweets.setOnClickListener(this);
+                ivFavorites.setOnClickListener(this);
             } else {
                 Log.d(TAG, "onCreate: parcel object instance of some other thing");
             }
@@ -96,7 +110,7 @@ public class TweetDetailActivity extends AppCompatActivity implements TextView.O
     }
 
     @Override
-    public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+    public boolean onEditorAction(final TextView textView, int actionId, KeyEvent keyEvent) {
         boolean handled = false;
         if(actionId == EditorInfo.IME_ACTION_SEND && twitterClient != null){
             Log.d(TAG, "onEditorAction: posting tweet");
@@ -105,17 +119,20 @@ public class TweetDetailActivity extends AppCompatActivity implements TextView.O
                 Snackbar.make(textView.getRootView(), "Cannot post tweet without mentioning user", Snackbar.LENGTH_LONG).show();
             }
 
-            /*twitterClient.postTweet(textView.getText().toString(), tweet.id, new AsyncHttpResponseHandler() {
+            twitterClient.postTweet(textView.getText().toString(), tweet.id, new TextHttpResponseHandler() {
                 @Override
-                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    Log.e(TAG, "onFailure: ", throwable);
                 }
 
                 @Override
-                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-
+                public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                    TweetModel postedTweet = TweetModel.parseJSON(responseString);
+                    postedTweet.user.save();
+                    postedTweet.save();
+                    Snackbar.make(textView.getRootView(), "Posted Tweet", Snackbar.LENGTH_LONG).show();
                 }
-            });*/
+            });
             handled = true;
         }
         return handled;
@@ -131,12 +148,78 @@ public class TweetDetailActivity extends AppCompatActivity implements TextView.O
                     etDetailReply.append(String.format(Locale.ENGLISH, "%s",replyTo));
                 }
                 break;
+            case R.id.iv_detail_pic:
+                Log.d(TAG, "onClick: starting user timeline");
+                Intent intent = new Intent(this, UserTimelineActivity.class);
+                intent.putExtra("screen_name", tweet.user.screen_name);
+                startActivity(intent);
+                break;
+            case R.id.iv_retweet:
+                Log.d(TAG, "onClick: retweet");
+                twitterClient.retweet(tweet.id, tweet.retweeted, new TextHttpResponseHandler() {
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        Log.e(TAG, "onFailure: ",throwable.getCause());
+                    }
+
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                        Log.d(TAG, "onSuccess: retweet");
+                        saveTweet(responseString);
+                        if(tweet.retweeted) {
+                            ivRetweets.setImageResource(R.drawable.ic_retweeted);
+                        } else {
+                            ivRetweets.setImageResource(R.drawable.ic_retweet);
+                        }
+
+                    }
+                });
+                break;
+            case R.id.iv_favorites:
+                Log.d(TAG, "onClick: favorite");
+                twitterClient.favorite(tweet.id, tweet.favorited, new TextHttpResponseHandler() {
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        Log.e(TAG, "onFailure: ",throwable.getCause());
+                    }
+
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                        Log.d(TAG, "onSuccess: favorite");
+                        saveTweet(responseString);
+                        if(tweet.favorited) {
+                            ivFavorites.setImageResource(R.drawable.ic_favorited);
+                        } else {
+                            ivFavorites.setImageResource(R.drawable.ic_favorite);
+                        }
+                    }
+                });
+                break;
         }
     }
 
+    private void saveTweet(String responseString) {
+        Log.d(TAG, "saveTweet: saving Tweet");
+        tweet = TweetModel.parseJSON(responseString);
+        Log.d(TAG, "saveTweet: retweet status: " +tweet.retweeted);
+        Log.d(TAG, "saveTweet: favorite status: "+tweet.favorited);
+        tweet.user.save();
+        tweet.save();
+    }
+
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_tweet_detail, menu);
         return true;
+    }
+
+    @Override
+    public void onSpanClicked(String text) {
+        Log.d(TAG, "onSpanClicked: "+text);
+        if(text.contains("#")){
+            Log.d(TAG, "onSpanClicked: hashtag");
+        } else if (text.contains("@")){
+            Log.d(TAG, "onSpanClicked: handle");
+        }
     }
 }
